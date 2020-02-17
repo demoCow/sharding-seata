@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.ProductCommentDao">
+  <resultMap id="BaseResultMap" type="com.entity.ProductComment">
+    <id column="comment_id" jdbcType="VARCHAR" property="commentId" />
+    <result column="product_spu_num" jdbcType="VARCHAR" property="productSpuNum" />
+    <result column="order_master_num" jdbcType="VARCHAR" property="orderMasterNum" />
+    <result column="order_house_num" jdbcType="VARCHAR" property="orderHouseNum" />
+    <result column="member_security_id" jdbcType="VARCHAR" property="memberSecurityId" />
+    <result column="comment_anonymous" jdbcType="SMALLINT" property="commentAnonymous" />
+    <result column="comment_score" jdbcType="SMALLINT" property="commentScore" />
+    <result column="comment_status" jdbcType="VARCHAR" property="commentStatus" />
+    <result column="comment_modified_time" jdbcType="VARCHAR" property="commentModifiedTime" />
+    <result column="spu_owner_id" jdbcType="VARCHAR" property="spuOwnerId" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.entity.ProductComment">
+    <result column="comment_content" jdbcType="LONGVARCHAR" property="commentContent" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    comment_id, product_spu_num, order_master_num, order_house_num, member_security_id, 
+    comment_anonymous, comment_score, comment_status, comment_modified_time, spu_owner_id
+  </sql>
+  <sql id="Blob_Column_List">
+    comment_content
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from product_comment
+    where comment_id = #{commentId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from product_comment
+    where comment_id = #{commentId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" keyColumn="comment_id" keyProperty="commentId" parameterType="com.entity.ProductComment" useGeneratedKeys="true">
+    insert into product_comment (product_spu_num, order_master_num, order_house_num, 
+      member_security_id, comment_anonymous, comment_score, 
+      comment_status, comment_modified_time, spu_owner_id, 
+      comment_content)
+    values (#{productSpuNum,jdbcType=VARCHAR}, #{orderMasterNum,jdbcType=VARCHAR}, #{orderHouseNum,jdbcType=VARCHAR}, 
+      #{memberSecurityId,jdbcType=VARCHAR}, #{commentAnonymous,jdbcType=SMALLINT}, #{commentScore,jdbcType=SMALLINT}, 
+      #{commentStatus,jdbcType=VARCHAR}, #{commentModifiedTime,jdbcType=VARCHAR}, #{spuOwnerId,jdbcType=VARCHAR}, 
+      #{commentContent,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="comment_id" keyProperty="commentId" parameterType="com.entity.ProductComment" useGeneratedKeys="true">
+    insert into product_comment
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="productSpuNum != null">
+        product_spu_num,
+      </if>
+      <if test="orderMasterNum != null">
+        order_master_num,
+      </if>
+      <if test="orderHouseNum != null">
+        order_house_num,
+      </if>
+      <if test="memberSecurityId != null">
+        member_security_id,
+      </if>
+      <if test="commentAnonymous != null">
+        comment_anonymous,
+      </if>
+      <if test="commentScore != null">
+        comment_score,
+      </if>
+      <if test="commentStatus != null">
+        comment_status,
+      </if>
+      <if test="commentModifiedTime != null">
+        comment_modified_time,
+      </if>
+      <if test="spuOwnerId != null">
+        spu_owner_id,
+      </if>
+      <if test="commentContent != null">
+        comment_content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="productSpuNum != null">
+        #{productSpuNum,jdbcType=VARCHAR},
+      </if>
+      <if test="orderMasterNum != null">
+        #{orderMasterNum,jdbcType=VARCHAR},
+      </if>
+      <if test="orderHouseNum != null">
+        #{orderHouseNum,jdbcType=VARCHAR},
+      </if>
+      <if test="memberSecurityId != null">
+        #{memberSecurityId,jdbcType=VARCHAR},
+      </if>
+      <if test="commentAnonymous != null">
+        #{commentAnonymous,jdbcType=SMALLINT},
+      </if>
+      <if test="commentScore != null">
+        #{commentScore,jdbcType=SMALLINT},
+      </if>
+      <if test="commentStatus != null">
+        #{commentStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="commentModifiedTime != null">
+        #{commentModifiedTime,jdbcType=VARCHAR},
+      </if>
+      <if test="spuOwnerId != null">
+        #{spuOwnerId,jdbcType=VARCHAR},
+      </if>
+      <if test="commentContent != null">
+        #{commentContent,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.entity.ProductComment">
+    update product_comment
+    <set>
+      <if test="productSpuNum != null">
+        product_spu_num = #{productSpuNum,jdbcType=VARCHAR},
+      </if>
+      <if test="orderMasterNum != null">
+        order_master_num = #{orderMasterNum,jdbcType=VARCHAR},
+      </if>
+      <if test="orderHouseNum != null">
+        order_house_num = #{orderHouseNum,jdbcType=VARCHAR},
+      </if>
+      <if test="memberSecurityId != null">
+        member_security_id = #{memberSecurityId,jdbcType=VARCHAR},
+      </if>
+      <if test="commentAnonymous != null">
+        comment_anonymous = #{commentAnonymous,jdbcType=SMALLINT},
+      </if>
+      <if test="commentScore != null">
+        comment_score = #{commentScore,jdbcType=SMALLINT},
+      </if>
+      <if test="commentStatus != null">
+        comment_status = #{commentStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="commentModifiedTime != null">
+        comment_modified_time = #{commentModifiedTime,jdbcType=VARCHAR},
+      </if>
+      <if test="spuOwnerId != null">
+        spu_owner_id = #{spuOwnerId,jdbcType=VARCHAR},
+      </if>
+      <if test="commentContent != null">
+        comment_content = #{commentContent,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where comment_id = #{commentId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.entity.ProductComment">
+    update product_comment
+    set product_spu_num = #{productSpuNum,jdbcType=VARCHAR},
+      order_master_num = #{orderMasterNum,jdbcType=VARCHAR},
+      order_house_num = #{orderHouseNum,jdbcType=VARCHAR},
+      member_security_id = #{memberSecurityId,jdbcType=VARCHAR},
+      comment_anonymous = #{commentAnonymous,jdbcType=SMALLINT},
+      comment_score = #{commentScore,jdbcType=SMALLINT},
+      comment_status = #{commentStatus,jdbcType=VARCHAR},
+      comment_modified_time = #{commentModifiedTime,jdbcType=VARCHAR},
+      spu_owner_id = #{spuOwnerId,jdbcType=VARCHAR},
+      comment_content = #{commentContent,jdbcType=LONGVARCHAR}
+    where comment_id = #{commentId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.entity.ProductComment">
+    update product_comment
+    set product_spu_num = #{productSpuNum,jdbcType=VARCHAR},
+      order_master_num = #{orderMasterNum,jdbcType=VARCHAR},
+      order_house_num = #{orderHouseNum,jdbcType=VARCHAR},
+      member_security_id = #{memberSecurityId,jdbcType=VARCHAR},
+      comment_anonymous = #{commentAnonymous,jdbcType=SMALLINT},
+      comment_score = #{commentScore,jdbcType=SMALLINT},
+      comment_status = #{commentStatus,jdbcType=VARCHAR},
+      comment_modified_time = #{commentModifiedTime,jdbcType=VARCHAR},
+      spu_owner_id = #{spuOwnerId,jdbcType=VARCHAR}
+    where comment_id = #{commentId,jdbcType=VARCHAR}
+  </update>
+</mapper>

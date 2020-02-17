@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.ProductSpuDao">
+  <resultMap id="BaseResultMap" type="com.entity.ProductSpu">
+    <id column="spu_id" jdbcType="VARCHAR" property="spuId" />
+    <result column="spu_num" jdbcType="VARCHAR" property="spuNum" />
+    <result column="product_category_id" jdbcType="VARCHAR" property="productCategoryId" />
+    <result column="product_brand_id" jdbcType="VARCHAR" property="productBrandId" />
+    <result column="spu_owner_id" jdbcType="VARCHAR" property="spuOwnerId" />
+    <result column="freight_template_id" jdbcType="VARCHAR" property="freightTemplateId" />
+    <result column="spu_title" jdbcType="VARCHAR" property="spuTitle" />
+    <result column="spu_slogan" jdbcType="VARCHAR" property="spuSlogan" />
+    <result column="spu_keywords" jdbcType="VARCHAR" property="spuKeywords" />
+    <result column="spu_fixed_price" jdbcType="VARCHAR" property="spuFixedPrice" />
+    <result column="spu_gross_inventory" jdbcType="INTEGER" property="spuGrossInventory" />
+    <result column="spu_spec_kvs" jdbcType="VARCHAR" property="spuSpecKvs" />
+    <result column="spu_bar_code" jdbcType="VARCHAR" property="spuBarCode" />
+    <result column="spu_Inventory_count" jdbcType="VARCHAR" property="spuInventoryCount" />
+    <result column="spu_comment_count" jdbcType="BIGINT" property="spuCommentCount" />
+    <result column="spu_status" jdbcType="VARCHAR" property="spuStatus" />
+    <result column="spu_put_on_way" jdbcType="VARCHAR" property="spuPutOnWay" />
+    <result column="spu_pub_time" jdbcType="TIMESTAMP" property="spuPubTime" />
+    <result column="spu_modified_time" jdbcType="TIMESTAMP" property="spuModifiedTime" />
+    <result column="spu_create_time" jdbcType="TIMESTAMP" property="spuCreateTime" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.entity.ProductSpu">
+    <result column="spu_parameter_details" jdbcType="LONGVARCHAR" property="spuParameterDetails" />
+  </resultMap>
+
+  <resultMap id="spuInfo" type="com.entity.ProductSpu" extends="BaseResultMap">
+      <collection property="skus" ofType="com.entity.ProductSku" resultMap="com.dao.ProductSkuDao.skuInfo">
+      </collection>
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    spu_id, spu_num, product_category_id, product_brand_id, product_spu.spu_owner_id, freight_template_id,
+    spu_title, spu_slogan, spu_keywords, spu_fixed_price, spu_gross_inventory, spu_spec_kvs, 
+    spu_bar_code, spu_Inventory_count, spu_comment_count, spu_status, spu_put_on_way, 
+    spu_pub_time, spu_modified_time, spu_create_time
+  </sql>
+
+  <sql id="Blob_Column_List">
+    spu_parameter_details
+  </sql>
+
+
+  <select id="selectInfoById" resultMap="spuInfo">
+    SELECT
+      <include refid="Base_Column_List" />
+      ,
+      <include refid="Blob_Column_List" />
+      ,
+      <include refid="com.dao.ProductSkuDao.Column_List_4_Spu" />
+      ,
+      <include refid="com.dao.ProductSkuInventoryDao.Column_List_4_Spu" />
+    FROM
+        product_spu
+    Left JOIN
+        product_sku on product_spu.spu_num = product_sku.product_spu_num
+    Left JOIN
+        product_sku_inventory on product_sku.sku_num = product_sku_inventory.product_sku_num
+    WHERE
+        spu_num = #{spu}
+  </select>
+
+
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from product_spu
+    where spu_id = #{spuId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from product_spu
+    where spu_id = #{spuId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" keyColumn="spu_id" keyProperty="spuId" parameterType="com.entity.ProductSpu" useGeneratedKeys="true">
+    insert into product_spu (spu_num, product_category_id, product_brand_id, 
+      spu_owner_id, freight_template_id, spu_title, 
+      spu_slogan, spu_keywords, spu_fixed_price, 
+      spu_gross_inventory, spu_spec_kvs, spu_bar_code, 
+      spu_Inventory_count, spu_comment_count, spu_status, 
+      spu_put_on_way, spu_pub_time, spu_modified_time, 
+      spu_create_time, spu_parameter_details
+      )
+    values (#{spuNum,jdbcType=VARCHAR}, #{productCategoryId,jdbcType=VARCHAR}, #{productBrandId,jdbcType=VARCHAR}, 
+      #{spuOwnerId,jdbcType=VARCHAR}, #{freightTemplateId,jdbcType=VARCHAR}, #{spuTitle,jdbcType=VARCHAR}, 
+      #{spuSlogan,jdbcType=VARCHAR}, #{spuKeywords,jdbcType=VARCHAR}, #{spuFixedPrice,jdbcType=VARCHAR}, 
+      #{spuGrossInventory,jdbcType=INTEGER}, #{spuSpecKvs,jdbcType=VARCHAR}, #{spuBarCode,jdbcType=VARCHAR}, 
+      #{spuInventoryCount,jdbcType=VARCHAR}, #{spuCommentCount,jdbcType=BIGINT}, #{spuStatus,jdbcType=VARCHAR}, 
+      #{spuPutOnWay,jdbcType=VARCHAR}, #{spuPubTime,jdbcType=TIMESTAMP}, #{spuModifiedTime,jdbcType=TIMESTAMP}, 
+      #{spuCreateTime,jdbcType=TIMESTAMP}, #{spuParameterDetails,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="spu_id" keyProperty="spuId" parameterType="com.entity.ProductSpu" useGeneratedKeys="true">
+    insert into product_spu
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="spuNum != null">
+        spu_num,
+      </if>
+      <if test="productCategoryId != null">
+        product_category_id,
+      </if>
+      <if test="productBrandId != null">
+        product_brand_id,
+      </if>
+      <if test="spuOwnerId != null">
+        spu_owner_id,
+      </if>
+      <if test="freightTemplateId != null">
+        freight_template_id,
+      </if>
+      <if test="spuTitle != null">
+        spu_title,
+      </if>
+      <if test="spuSlogan != null">
+        spu_slogan,
+      </if>
+      <if test="spuKeywords != null">
+        spu_keywords,
+      </if>
+      <if test="spuFixedPrice != null">
+        spu_fixed_price,
+      </if>
+      <if test="spuGrossInventory != null">
+        spu_gross_inventory,
+      </if>
+      <if test="spuSpecKvs != null">
+        spu_spec_kvs,
+      </if>
+      <if test="spuBarCode != null">
+        spu_bar_code,
+      </if>
+      <if test="spuInventoryCount != null">
+        spu_Inventory_count,
+      </if>
+      <if test="spuCommentCount != null">
+        spu_comment_count,
+      </if>
+      <if test="spuStatus != null">
+        spu_status,
+      </if>
+      <if test="spuPutOnWay != null">
+        spu_put_on_way,
+      </if>
+      <if test="spuPubTime != null">
+        spu_pub_time,
+      </if>
+      <if test="spuModifiedTime != null">
+        spu_modified_time,
+      </if>
+      <if test="spuCreateTime != null">
+        spu_create_time,
+      </if>
+      <if test="spuParameterDetails != null">
+        spu_parameter_details,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="spuNum != null">
+        #{spuNum,jdbcType=VARCHAR},
+      </if>
+      <if test="productCategoryId != null">
+        #{productCategoryId,jdbcType=VARCHAR},
+      </if>
+      <if test="productBrandId != null">
+        #{productBrandId,jdbcType=VARCHAR},
+      </if>
+      <if test="spuOwnerId != null">
+        #{spuOwnerId,jdbcType=VARCHAR},
+      </if>
+      <if test="freightTemplateId != null">
+        #{freightTemplateId,jdbcType=VARCHAR},
+      </if>
+      <if test="spuTitle != null">
+        #{spuTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="spuSlogan != null">
+        #{spuSlogan,jdbcType=VARCHAR},
+      </if>
+      <if test="spuKeywords != null">
+        #{spuKeywords,jdbcType=VARCHAR},
+      </if>
+      <if test="spuFixedPrice != null">
+        #{spuFixedPrice,jdbcType=VARCHAR},
+      </if>
+      <if test="spuGrossInventory != null">
+        #{spuGrossInventory,jdbcType=INTEGER},
+      </if>
+      <if test="spuSpecKvs != null">
+        #{spuSpecKvs,jdbcType=VARCHAR},
+      </if>
+      <if test="spuBarCode != null">
+        #{spuBarCode,jdbcType=VARCHAR},
+      </if>
+      <if test="spuInventoryCount != null">
+        #{spuInventoryCount,jdbcType=VARCHAR},
+      </if>
+      <if test="spuCommentCount != null">
+        #{spuCommentCount,jdbcType=BIGINT},
+      </if>
+      <if test="spuStatus != null">
+        #{spuStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="spuPutOnWay != null">
+        #{spuPutOnWay,jdbcType=VARCHAR},
+      </if>
+      <if test="spuPubTime != null">
+        #{spuPubTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="spuModifiedTime != null">
+        #{spuModifiedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="spuCreateTime != null">
+        #{spuCreateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="spuParameterDetails != null">
+        #{spuParameterDetails,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+
+  <insert id="insertSelectiveWithId"  parameterType="com.entity.ProductSpu">
+    insert into product_spu
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      spu_id,
+      <if test="spuNum != null">
+        spu_num,
+      </if>
+      <if test="productCategoryId != null">
+        product_category_id,
+      </if>
+      <if test="productBrandId != null">
+        product_brand_id,
+      </if>
+      <if test="spuOwnerId != null">
+        spu_owner_id,
+      </if>
+      <if test="freightTemplateId != null">
+        freight_template_id,
+      </if>
+      <if test="spuTitle != null">
+        spu_title,
+      </if>
+      <if test="spuSlogan != null">
+        spu_slogan,
+      </if>
+      <if test="spuKeywords != null">
+        spu_keywords,
+      </if>
+      <if test="spuFixedPrice != null">
+        spu_fixed_price,
+      </if>
+      <if test="spuGrossInventory != null">
+        spu_gross_inventory,
+      </if>
+      <if test="spuSpecKvs != null">
+        spu_spec_kvs,
+      </if>
+      <if test="spuBarCode != null">
+        spu_bar_code,
+      </if>
+      <if test="spuInventoryCount != null">
+        spu_Inventory_count,
+      </if>
+      <if test="spuCommentCount != null">
+        spu_comment_count,
+      </if>
+      <if test="spuStatus != null">
+        spu_status,
+      </if>
+      <if test="spuPutOnWay != null">
+        spu_put_on_way,
+      </if>
+      <if test="spuPubTime != null">
+        spu_pub_time,
+      </if>
+      <if test="spuModifiedTime != null">
+        spu_modified_time,
+      </if>
+      <if test="spuCreateTime != null">
+        spu_create_time,
+      </if>
+      <if test="spuParameterDetails != null">
+        spu_parameter_details,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      #{spuId,jdbcType=VARCHAR},
+      <if test="spuNum != null">
+        #{spuNum,jdbcType=VARCHAR},
+      </if>
+      <if test="productCategoryId != null">
+        #{productCategoryId,jdbcType=VARCHAR},
+      </if>
+      <if test="productBrandId != null">
+        #{productBrandId,jdbcType=VARCHAR},
+      </if>
+      <if test="spuOwnerId != null">
+        #{spuOwnerId,jdbcType=VARCHAR},
+      </if>
+      <if test="freightTemplateId != null">
+        #{freightTemplateId,jdbcType=VARCHAR},
+      </if>
+      <if test="spuTitle != null">
+        #{spuTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="spuSlogan != null">
+        #{spuSlogan,jdbcType=VARCHAR},
+      </if>
+      <if test="spuKeywords != null">
+        #{spuKeywords,jdbcType=VARCHAR},
+      </if>
+      <if test="spuFixedPrice != null">
+        #{spuFixedPrice,jdbcType=VARCHAR},
+      </if>
+      <if test="spuGrossInventory != null">
+        #{spuGrossInventory,jdbcType=INTEGER},
+      </if>
+      <if test="spuSpecKvs != null">
+        #{spuSpecKvs,jdbcType=VARCHAR},
+      </if>
+      <if test="spuBarCode != null">
+        #{spuBarCode,jdbcType=VARCHAR},
+      </if>
+      <if test="spuInventoryCount != null">
+        #{spuInventoryCount,jdbcType=VARCHAR},
+      </if>
+      <if test="spuCommentCount != null">
+        #{spuCommentCount,jdbcType=BIGINT},
+      </if>
+      <if test="spuStatus != null">
+        #{spuStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="spuPutOnWay != null">
+        #{spuPutOnWay,jdbcType=VARCHAR},
+      </if>
+      <if test="spuPubTime != null">
+        #{spuPubTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="spuModifiedTime != null">
+        #{spuModifiedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="spuCreateTime != null">
+        #{spuCreateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="spuParameterDetails != null">
+        #{spuParameterDetails,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+
+
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.entity.ProductSpu">
+    update product_spu
+    <set>
+      <if test="spuNum != null">
+        spu_num = #{spuNum,jdbcType=VARCHAR},
+      </if>
+      <if test="productCategoryId != null">
+        product_category_id = #{productCategoryId,jdbcType=VARCHAR},
+      </if>
+      <if test="productBrandId != null">
+        product_brand_id = #{productBrandId,jdbcType=VARCHAR},
+      </if>
+      <if test="spuOwnerId != null">
+        spu_owner_id = #{spuOwnerId,jdbcType=VARCHAR},
+      </if>
+      <if test="freightTemplateId != null">
+        freight_template_id = #{freightTemplateId,jdbcType=VARCHAR},
+      </if>
+      <if test="spuTitle != null">
+        spu_title = #{spuTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="spuSlogan != null">
+        spu_slogan = #{spuSlogan,jdbcType=VARCHAR},
+      </if>
+      <if test="spuKeywords != null">
+        spu_keywords = #{spuKeywords,jdbcType=VARCHAR},
+      </if>
+      <if test="spuFixedPrice != null">
+        spu_fixed_price = #{spuFixedPrice,jdbcType=VARCHAR},
+      </if>
+      <if test="spuGrossInventory != null">
+        spu_gross_inventory = #{spuGrossInventory,jdbcType=INTEGER},
+      </if>
+      <if test="spuSpecKvs != null">
+        spu_spec_kvs = #{spuSpecKvs,jdbcType=VARCHAR},
+      </if>
+      <if test="spuBarCode != null">
+        spu_bar_code = #{spuBarCode,jdbcType=VARCHAR},
+      </if>
+      <if test="spuInventoryCount != null">
+        spu_Inventory_count = #{spuInventoryCount,jdbcType=VARCHAR},
+      </if>
+      <if test="spuCommentCount != null">
+        spu_comment_count = #{spuCommentCount,jdbcType=BIGINT},
+      </if>
+      <if test="spuStatus != null">
+        spu_status = #{spuStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="spuPutOnWay != null">
+        spu_put_on_way = #{spuPutOnWay,jdbcType=VARCHAR},
+      </if>
+      <if test="spuPubTime != null">
+        spu_pub_time = #{spuPubTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="spuModifiedTime != null">
+        spu_modified_time = #{spuModifiedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="spuCreateTime != null">
+        spu_create_time = #{spuCreateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="spuParameterDetails != null">
+        spu_parameter_details = #{spuParameterDetails,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where spu_id = #{spuId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.entity.ProductSpu">
+    update product_spu
+    set spu_num = #{spuNum,jdbcType=VARCHAR},
+      product_category_id = #{productCategoryId,jdbcType=VARCHAR},
+      product_brand_id = #{productBrandId,jdbcType=VARCHAR},
+      spu_owner_id = #{spuOwnerId,jdbcType=VARCHAR},
+      freight_template_id = #{freightTemplateId,jdbcType=VARCHAR},
+      spu_title = #{spuTitle,jdbcType=VARCHAR},
+      spu_slogan = #{spuSlogan,jdbcType=VARCHAR},
+      spu_keywords = #{spuKeywords,jdbcType=VARCHAR},
+      spu_fixed_price = #{spuFixedPrice,jdbcType=VARCHAR},
+      spu_gross_inventory = #{spuGrossInventory,jdbcType=INTEGER},
+      spu_spec_kvs = #{spuSpecKvs,jdbcType=VARCHAR},
+      spu_bar_code = #{spuBarCode,jdbcType=VARCHAR},
+      spu_Inventory_count = #{spuInventoryCount,jdbcType=VARCHAR},
+      spu_comment_count = #{spuCommentCount,jdbcType=BIGINT},
+      spu_status = #{spuStatus,jdbcType=VARCHAR},
+      spu_put_on_way = #{spuPutOnWay,jdbcType=VARCHAR},
+      spu_pub_time = #{spuPubTime,jdbcType=TIMESTAMP},
+      spu_modified_time = #{spuModifiedTime,jdbcType=TIMESTAMP},
+      spu_create_time = #{spuCreateTime,jdbcType=TIMESTAMP},
+      spu_parameter_details = #{spuParameterDetails,jdbcType=LONGVARCHAR}
+    where spu_id = #{spuId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.entity.ProductSpu">
+    update product_spu
+    set spu_num = #{spuNum,jdbcType=VARCHAR},
+      product_category_id = #{productCategoryId,jdbcType=VARCHAR},
+      product_brand_id = #{productBrandId,jdbcType=VARCHAR},
+      spu_owner_id = #{spuOwnerId,jdbcType=VARCHAR},
+      freight_template_id = #{freightTemplateId,jdbcType=VARCHAR},
+      spu_title = #{spuTitle,jdbcType=VARCHAR},
+      spu_slogan = #{spuSlogan,jdbcType=VARCHAR},
+      spu_keywords = #{spuKeywords,jdbcType=VARCHAR},
+      spu_fixed_price = #{spuFixedPrice,jdbcType=VARCHAR},
+      spu_gross_inventory = #{spuGrossInventory,jdbcType=INTEGER},
+      spu_spec_kvs = #{spuSpecKvs,jdbcType=VARCHAR},
+      spu_bar_code = #{spuBarCode,jdbcType=VARCHAR},
+      spu_Inventory_count = #{spuInventoryCount,jdbcType=VARCHAR},
+      spu_comment_count = #{spuCommentCount,jdbcType=BIGINT},
+      spu_status = #{spuStatus,jdbcType=VARCHAR},
+      spu_put_on_way = #{spuPutOnWay,jdbcType=VARCHAR},
+      spu_pub_time = #{spuPubTime,jdbcType=TIMESTAMP},
+      spu_modified_time = #{spuModifiedTime,jdbcType=TIMESTAMP},
+      spu_create_time = #{spuCreateTime,jdbcType=TIMESTAMP}
+    where spu_id = #{spuId,jdbcType=VARCHAR}
+  </update>
+</mapper>

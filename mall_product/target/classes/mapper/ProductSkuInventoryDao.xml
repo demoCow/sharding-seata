@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.ProductSkuInventoryDao">
+  <resultMap id="BaseResultMap" type="com.entity.ProductSkuInventory">
+    <id column="sku_inventory_id" jdbcType="VARCHAR" property="skuInventoryId" />
+    <result column="product_spu_num" jdbcType="VARCHAR" property="productSpuNum" />
+    <result column="product_sku_num" jdbcType="VARCHAR" property="productSkuNum" />
+    <result column="sku_inventory_quantity" jdbcType="INTEGER" property="skuInventoryQuantity" />
+    <result column="sku_inventory_modified_time" jdbcType="TIMESTAMP" property="skuInventoryModifiedTime" />
+    <result column="spu_owner_id" jdbcType="VARCHAR" property="spuOwnerId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    sku_inventory_id, product_spu_num, product_sku_num, sku_inventory_quantity, sku_inventory_modified_time,
+    spu_owner_id
+  </sql>
+
+  <sql id="Column_List_4_Spu">
+    sku_inventory_id,sku_inventory_quantity
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from product_sku_inventory
+    where sku_inventory_id = #{skuInventoryId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from product_sku_inventory
+    where sku_inventory_id = #{skuInventoryId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" keyColumn="sku_inventory_id" keyProperty="skuInventoryId" parameterType="com.entity.ProductSkuInventory" useGeneratedKeys="true">
+    insert into product_sku_inventory (product_spu_num, product_sku_num, sku_inventory_quantity, 
+      sku_inventory_modified_time, spu_owner_id)
+    values (#{productSpuNum,jdbcType=VARCHAR}, #{productSkuNum,jdbcType=VARCHAR}, #{skuInventoryQuantity,jdbcType=INTEGER}, 
+      #{skuInventoryModifiedTime,jdbcType=TIMESTAMP}, #{spuOwnerId,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="sku_inventory_id" keyProperty="skuInventoryId" parameterType="com.entity.ProductSkuInventory" useGeneratedKeys="true">
+    insert into product_sku_inventory
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="productSpuNum != null">
+        product_spu_num,
+      </if>
+      <if test="productSkuNum != null">
+        product_sku_num,
+      </if>
+      <if test="skuInventoryQuantity != null">
+        sku_inventory_quantity,
+      </if>
+      <if test="skuInventoryModifiedTime != null">
+        sku_inventory_modified_time,
+      </if>
+      <if test="spuOwnerId != null">
+        spu_owner_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="productSpuNum != null">
+        #{productSpuNum,jdbcType=VARCHAR},
+      </if>
+      <if test="productSkuNum != null">
+        #{productSkuNum,jdbcType=VARCHAR},
+      </if>
+      <if test="skuInventoryQuantity != null">
+        #{skuInventoryQuantity,jdbcType=INTEGER},
+      </if>
+      <if test="skuInventoryModifiedTime != null">
+        #{skuInventoryModifiedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="spuOwnerId != null">
+        #{spuOwnerId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.entity.ProductSkuInventory">
+    update product_sku_inventory
+    <set>
+      <if test="productSpuNum != null">
+        product_spu_num = #{productSpuNum,jdbcType=VARCHAR},
+      </if>
+      <if test="productSkuNum != null">
+        product_sku_num = #{productSkuNum,jdbcType=VARCHAR},
+      </if>
+      <if test="skuInventoryQuantity != null">
+        sku_inventory_quantity = #{skuInventoryQuantity,jdbcType=INTEGER},
+      </if>
+      <if test="skuInventoryModifiedTime != null">
+        sku_inventory_modified_time = #{skuInventoryModifiedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="spuOwnerId != null">
+        spu_owner_id = #{spuOwnerId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where sku_inventory_id = #{skuInventoryId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.entity.ProductSkuInventory">
+    update product_sku_inventory
+    set product_spu_num = #{productSpuNum,jdbcType=VARCHAR},
+      product_sku_num = #{productSkuNum,jdbcType=VARCHAR},
+      sku_inventory_quantity = #{skuInventoryQuantity,jdbcType=INTEGER},
+      sku_inventory_modified_time = #{skuInventoryModifiedTime,jdbcType=TIMESTAMP},
+      spu_owner_id = #{spuOwnerId,jdbcType=VARCHAR}
+    where sku_inventory_id = #{skuInventoryId,jdbcType=VARCHAR}
+  </update>
+
+
+  <update id="inventoryByOrder">
+    UPDATE
+	  product_sku_inventory
+    SET
+	  sku_inventory_quantity = sku_inventory_quantity -1
+    WHERE
+	  product_sku_num = '435924699730411520'
+	AND
+	  product_spu_num = '435924699730411520'
+	AND
+	  spu_owner_id = '11'
+  </update>
+
+
+  <update id="inventoryByOrder2">
+    UPDATE
+	  product_sku_inventory
+    SET
+	  sku_inventory_quantity = sku_inventory_quantity -1
+    WHERE
+	  product_sku_num in ('434823092640940034' , '435924699730411520')
+  </update>
+
+
+  <update id="inventoryByOrder3">
+    UPDATE
+	  product_sku_inventory
+    SET
+	  sku_inventory_quantity = sku_inventory_quantity -1
+    WHERE
+	  product_sku_num = #{sku}
+  </update>
+
+
+
+  <update id="inventoryByOrder1">
+    UPDATE
+	  product_sku_inventory
+    SET
+	  sku_inventory_quantity = sku_inventory_quantity -1
+    WHERE
+	  product_sku_num = '435924699730411520'
+	OR
+	  product_sku_num = '434823092640940034'
+  </update>
+
+</mapper>

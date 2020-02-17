@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.ProductSpuDescriptionDao">
+  <resultMap id="BaseResultMap" type="com.entity.ProductSpuDescription">
+    <id column="spu_des_id" jdbcType="VARCHAR" property="spuDesId" />
+    <result column="product_sku_num" jdbcType="VARCHAR" property="productSkuNum" />
+    <result column="spu_owner_id" jdbcType="VARCHAR" property="spuOwnerId" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.entity.ProductSpuDescriptionWithBLOBs">
+    <result column="spu_web_description" jdbcType="LONGVARCHAR" property="spuWebDescription" />
+    <result column="spu_mobile_description" jdbcType="LONGVARCHAR" property="spuMobileDescription" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    spu_des_id, product_sku_num, spu_owner_id
+  </sql>
+  <sql id="Blob_Column_List">
+    spu_web_description, spu_mobile_description
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from product_spu_description
+    where spu_des_id = #{spuDesId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from product_spu_description
+    where spu_des_id = #{spuDesId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" keyColumn="spu_des_id" keyProperty="spuDesId" parameterType="com.entity.ProductSpuDescriptionWithBLOBs" useGeneratedKeys="true">
+    insert into product_spu_description (product_sku_num, spu_owner_id, spu_web_description, 
+      spu_mobile_description)
+    values (#{productSkuNum,jdbcType=VARCHAR}, #{spuOwnerId,jdbcType=VARCHAR}, #{spuWebDescription,jdbcType=LONGVARCHAR}, 
+      #{spuMobileDescription,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="spu_des_id" keyProperty="spuDesId" parameterType="com.entity.ProductSpuDescriptionWithBLOBs" useGeneratedKeys="true">
+    insert into product_spu_description
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="productSkuNum != null">
+        product_sku_num,
+      </if>
+      <if test="spuOwnerId != null">
+        spu_owner_id,
+      </if>
+      <if test="spuWebDescription != null">
+        spu_web_description,
+      </if>
+      <if test="spuMobileDescription != null">
+        spu_mobile_description,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="productSkuNum != null">
+        #{productSkuNum,jdbcType=VARCHAR},
+      </if>
+      <if test="spuOwnerId != null">
+        #{spuOwnerId,jdbcType=VARCHAR},
+      </if>
+      <if test="spuWebDescription != null">
+        #{spuWebDescription,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="spuMobileDescription != null">
+        #{spuMobileDescription,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.entity.ProductSpuDescriptionWithBLOBs">
+    update product_spu_description
+    <set>
+      <if test="productSkuNum != null">
+        product_sku_num = #{productSkuNum,jdbcType=VARCHAR},
+      </if>
+      <if test="spuOwnerId != null">
+        spu_owner_id = #{spuOwnerId,jdbcType=VARCHAR},
+      </if>
+      <if test="spuWebDescription != null">
+        spu_web_description = #{spuWebDescription,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="spuMobileDescription != null">
+        spu_mobile_description = #{spuMobileDescription,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where spu_des_id = #{spuDesId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.entity.ProductSpuDescriptionWithBLOBs">
+    update product_spu_description
+    set product_sku_num = #{productSkuNum,jdbcType=VARCHAR},
+      spu_owner_id = #{spuOwnerId,jdbcType=VARCHAR},
+      spu_web_description = #{spuWebDescription,jdbcType=LONGVARCHAR},
+      spu_mobile_description = #{spuMobileDescription,jdbcType=LONGVARCHAR}
+    where spu_des_id = #{spuDesId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.entity.ProductSpuDescription">
+    update product_spu_description
+    set product_sku_num = #{productSkuNum,jdbcType=VARCHAR},
+      spu_owner_id = #{spuOwnerId,jdbcType=VARCHAR}
+    where spu_des_id = #{spuDesId,jdbcType=VARCHAR}
+  </update>
+</mapper>

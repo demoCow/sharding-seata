@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.ProductSkuDao">
+  <resultMap id="BaseResultMap" type="com.entity.ProductSku">
+    <id column="sku_id" jdbcType="VARCHAR" property="skuId" />
+    <result column="sku_num" jdbcType="VARCHAR" property="skuNum" />
+    <result column="product_spu_num" jdbcType="VARCHAR" property="productSpuNum" />
+    <result column="sku_spec_index" jdbcType="VARCHAR" property="skuSpecIndex" />
+    <result column="sku_price" jdbcType="DECIMAL" property="skuPrice" />
+    <result column="sku_spec_kvs" jdbcType="VARCHAR" property="skuSpecKvs" />
+    <result column="sku_bar_code" jdbcType="VARCHAR" property="skuBarCode" />
+    <result column="spu_owner_id" jdbcType="VARCHAR" property="spuOwnerId" />
+  </resultMap>
+
+  <resultMap id="skuInfo" type="com.entity.ProductSku" extends="BaseResultMap">
+    <association property="inventory" javaType="com.entity.ProductSkuInventory" resultMap="com.dao.ProductSkuInventoryDao.BaseResultMap"></association>
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    sku_id, sku_num, product_spu_num, sku_spec_index, sku_price, sku_spec_kvs, sku_bar_code,
+    spu_owner_id
+  </sql>
+
+  <sql id="Column_List_4_Spu">
+    sku_id, sku_num, sku_spec_index, sku_price, sku_spec_kvs, sku_bar_code
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from product_sku
+    where sku_id = #{skuId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from product_sku
+    where sku_id = #{skuId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" keyColumn="sku_id" keyProperty="skuId" parameterType="com.entity.ProductSku" useGeneratedKeys="true">
+    insert into product_sku (sku_num, product_spu_num, sku_spec_index, 
+      sku_price, sku_spec_kvs, sku_bar_code, 
+      spu_owner_id)
+    values (#{skuNum,jdbcType=VARCHAR}, #{productSpuNum,jdbcType=VARCHAR}, #{skuSpecIndex,jdbcType=VARCHAR}, 
+      #{skuPrice,jdbcType=DECIMAL}, #{skuSpecKvs,jdbcType=VARCHAR}, #{skuBarCode,jdbcType=VARCHAR}, 
+      #{spuOwnerId,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="sku_id" keyProperty="skuId" parameterType="com.entity.ProductSku" useGeneratedKeys="true">
+    insert into product_sku
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="skuNum != null">
+        sku_num,
+      </if>
+      <if test="productSpuNum != null">
+        product_spu_num,
+      </if>
+      <if test="skuSpecIndex != null">
+        sku_spec_index,
+      </if>
+      <if test="skuPrice != null">
+        sku_price,
+      </if>
+      <if test="skuSpecKvs != null">
+        sku_spec_kvs,
+      </if>
+      <if test="skuBarCode != null">
+        sku_bar_code,
+      </if>
+      <if test="spuOwnerId != null">
+        spu_owner_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="skuNum != null">
+        #{skuNum,jdbcType=VARCHAR},
+      </if>
+      <if test="productSpuNum != null">
+        #{productSpuNum,jdbcType=VARCHAR},
+      </if>
+      <if test="skuSpecIndex != null">
+        #{skuSpecIndex,jdbcType=VARCHAR},
+      </if>
+      <if test="skuPrice != null">
+        #{skuPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="skuSpecKvs != null">
+        #{skuSpecKvs,jdbcType=VARCHAR},
+      </if>
+      <if test="skuBarCode != null">
+        #{skuBarCode,jdbcType=VARCHAR},
+      </if>
+      <if test="spuOwnerId != null">
+        #{spuOwnerId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.entity.ProductSku">
+    update product_sku
+    <set>
+      <if test="skuNum != null">
+        sku_num = #{skuNum,jdbcType=VARCHAR},
+      </if>
+      <if test="productSpuNum != null">
+        product_spu_num = #{productSpuNum,jdbcType=VARCHAR},
+      </if>
+      <if test="skuSpecIndex != null">
+        sku_spec_index = #{skuSpecIndex,jdbcType=VARCHAR},
+      </if>
+      <if test="skuPrice != null">
+        sku_price = #{skuPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="skuSpecKvs != null">
+        sku_spec_kvs = #{skuSpecKvs,jdbcType=VARCHAR},
+      </if>
+      <if test="skuBarCode != null">
+        sku_bar_code = #{skuBarCode,jdbcType=VARCHAR},
+      </if>
+      <if test="spuOwnerId != null">
+        spu_owner_id = #{spuOwnerId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where sku_id = #{skuId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.entity.ProductSku">
+    update product_sku
+    set sku_num = #{skuNum,jdbcType=VARCHAR},
+      product_spu_num = #{productSpuNum,jdbcType=VARCHAR},
+      sku_spec_index = #{skuSpecIndex,jdbcType=VARCHAR},
+      sku_price = #{skuPrice,jdbcType=DECIMAL},
+      sku_spec_kvs = #{skuSpecKvs,jdbcType=VARCHAR},
+      sku_bar_code = #{skuBarCode,jdbcType=VARCHAR},
+      spu_owner_id = #{spuOwnerId,jdbcType=VARCHAR}
+    where sku_id = #{skuId,jdbcType=VARCHAR}
+  </update>
+</mapper>

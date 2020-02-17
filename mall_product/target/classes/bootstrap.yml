@@ -1,0 +1,92 @@
+spring:
+  shardingsphere: #分库分表
+    enabled: true
+    props:
+      sql.show: true
+    datasource:
+      names: "product0,product1"  #数据源配置
+      product0:
+              type: com.alibaba.druid.pool.DruidDataSource
+              driver-class-name: com.mysql.jdbc.Driver
+              url: "jdbc:mysql://127.0.0.1:3306/mall_product_0?serverTimezone=GMT"
+              username: root
+              password: root
+      product1:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        url: "jdbc:mysql://127.0.0.1:3306/mall_product_1?serverTimezone=GMT"
+        username: root
+        password: root
+    sharding:
+      default-database-strategy: #商品分库策略
+        inline:
+          sharding-column: spu_owner_id #根据商铺/供应商ID分库
+          algorithm-expression: product$->{spu_owner_id.toLong()%2}
+      tables: #商品分表策略
+        product_spu: #spu表 spu,sku流水号由外部全局生成
+          actual-data-nodes: product$->{0..1}.product_spu_$->{0..1}
+          key-generator:
+            type: SNOWFLAKE
+            column: spu_id
+          table-strategy:
+            inline:
+              sharding-column: spu_num
+              algorithm-expression: product_spu_$->{spu_num.toLong()%2}
+        product_sku: #sku表
+          actual-data-nodes: product$->{0..1}.product_sku_$->{0..1}
+          key-generator:
+            type: SNOWFLAKE
+            column: sku_id
+          table-strategy:
+            inline:
+              sharding-column: product_spu_num
+              algorithm-expression: product_sku_$->{product_spu_num.toLong()%2}
+        product_sku_inventory: #商品库存表
+          actual-data-nodes: product$->{0..1}.product_sku_inventory_$->{0..1}
+          key-generator:
+            type: SNOWFLAKE
+            column: sku_inventory_id
+          table-strategy:
+            inline:
+              sharding-column: product_spu_num
+              algorithm-expression: product_sku_inventory_$->{product_spu_num.toLong()%2}
+        product_spu_description: #商品描述表
+          actual-data-nodes: product$->{0..1}.product_spu_description_$->{0..1}
+          key-generator:
+            type: SNOWFLAKE
+            column: spu_des_id
+          table-strategy:
+            inline:
+              sharding-column: product_spu_num
+              algorithm-expression: product_spu_description_$->{product_spu_num.toLong()%2}
+        product_comment: #商品评论表
+          actual-data-nodes: product$->{0..1}.product_comment_$->{0..1}
+          key-generator:
+            type: SNOWFLAKE
+            column: comment_id
+          table-strategy:
+            inline:
+              sharding-column: product_spu_id
+              algorithm-expression: product_comment_$->{product_spu_id.toLong()%2}
+        product_picture: #商品图片表
+          actual-data-nodes: product$->{0..1}.product_picture_$->{0..1}
+          key-generator:
+            type: SNOWFLAKE
+            column: picture_id
+          table-strategy:
+            inline:
+              sharding-column: product_spu_num
+              algorithm-expression: product_picture_$->{product_spu_num.toLong()%2}
+      binding-tables:
+        - product_spu,product_sku,product_sku_inventory,product_spu_description,product_comment,product_picture
+mybatis:
+  mapper-locations: classpath:mapper/**/*.xml
+#日志
+logging:
+  level:
+    root: info
+    org.springframework.web: debug
+    druid.sql: debug
+    com.dao: debug
+
+

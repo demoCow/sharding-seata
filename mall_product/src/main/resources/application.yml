@@ -1,0 +1,53 @@
+spring:
+  aop:  #使用CGLIB来实现AOP的时候
+    proxy-target-class: true
+  application:
+    name: mall-product
+  cloud:
+    alibaba:
+      seata:
+        tx-service-group: mall_tx_group
+server:
+  port: 8082
+#admin-configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+#cloud-configuration
+eureka:
+  instance:
+    prefer-ip-address: true
+    status-page-url-path: /actuator/info
+    health-check-url-path: /actuator/health
+    metadata-map:
+          zone: tianjin
+  client:
+    fetch-registry: true       #抓取路由注册表
+    register-with-eureka: true #单中心模式为false HA 模式自身也要注册
+    service-url:
+      defaultZone: http://192.168.1.124:80/eureka
+#日志
+logging:
+  level:
+    root: info
+    org.springframework.web: debug
+    druid.sql: debug
+    io.seata: debug
+seata:
+  registry:
+    type: eureka
+    eureka:
+      service-url: http://192.168.1.124:80/eureka
+      application: mall-transaction
+      weight: 1
+  config:
+    file:
+      name: file.conf
+    type: file
+  tx-service-group: mall_tx_group
+  application-id:  mall-product
+  service:
+    vgroup-mapping: mall-transaction
+    disable-global-transaction: false

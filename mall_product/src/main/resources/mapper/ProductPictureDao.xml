@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.ProductPictureDao">
+  <resultMap id="BaseResultMap" type="com.entity.ProductPicture">
+    <id column="picture_id" jdbcType="VARCHAR" property="pictureId" />
+    <result column="product_spu_num" jdbcType="INTEGER" property="productSpuNum" />
+    <result column="picture_path" jdbcType="VARCHAR" property="picturePath" />
+    <result column="picture_master_graph" jdbcType="SMALLINT" property="pictureMasterGraph" />
+    <result column="picture_order" jdbcType="SMALLINT" property="pictureOrder" />
+    <result column="picture_modified_time" jdbcType="TIMESTAMP" property="pictureModifiedTime" />
+    <result column="spu_owner_id" jdbcType="VARCHAR" property="spuOwnerId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    picture_id, product_spu_num, picture_path, picture_master_graph, picture_order, picture_modified_time, 
+    spu_owner_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from product_picture
+    where picture_id = #{pictureId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from product_picture
+    where picture_id = #{pictureId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" keyColumn="picture_id" keyProperty="pictureId" parameterType="com.entity.ProductPicture" useGeneratedKeys="true">
+    insert into product_picture (product_spu_num, picture_path, picture_master_graph, 
+      picture_order, picture_modified_time, spu_owner_id
+      )
+    values (#{productSpuNum,jdbcType=INTEGER}, #{picturePath,jdbcType=VARCHAR}, #{pictureMasterGraph,jdbcType=SMALLINT}, 
+      #{pictureOrder,jdbcType=SMALLINT}, #{pictureModifiedTime,jdbcType=TIMESTAMP}, #{spuOwnerId,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="picture_id" keyProperty="pictureId" parameterType="com.entity.ProductPicture" useGeneratedKeys="true">
+    insert into product_picture
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="productSpuNum != null">
+        product_spu_num,
+      </if>
+      <if test="picturePath != null">
+        picture_path,
+      </if>
+      <if test="pictureMasterGraph != null">
+        picture_master_graph,
+      </if>
+      <if test="pictureOrder != null">
+        picture_order,
+      </if>
+      <if test="pictureModifiedTime != null">
+        picture_modified_time,
+      </if>
+      <if test="spuOwnerId != null">
+        spu_owner_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="productSpuNum != null">
+        #{productSpuNum,jdbcType=INTEGER},
+      </if>
+      <if test="picturePath != null">
+        #{picturePath,jdbcType=VARCHAR},
+      </if>
+      <if test="pictureMasterGraph != null">
+        #{pictureMasterGraph,jdbcType=SMALLINT},
+      </if>
+      <if test="pictureOrder != null">
+        #{pictureOrder,jdbcType=SMALLINT},
+      </if>
+      <if test="pictureModifiedTime != null">
+        #{pictureModifiedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="spuOwnerId != null">
+        #{spuOwnerId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.entity.ProductPicture">
+    update product_picture
+    <set>
+      <if test="productSpuNum != null">
+        product_spu_num = #{productSpuNum,jdbcType=INTEGER},
+      </if>
+      <if test="picturePath != null">
+        picture_path = #{picturePath,jdbcType=VARCHAR},
+      </if>
+      <if test="pictureMasterGraph != null">
+        picture_master_graph = #{pictureMasterGraph,jdbcType=SMALLINT},
+      </if>
+      <if test="pictureOrder != null">
+        picture_order = #{pictureOrder,jdbcType=SMALLINT},
+      </if>
+      <if test="pictureModifiedTime != null">
+        picture_modified_time = #{pictureModifiedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="spuOwnerId != null">
+        spu_owner_id = #{spuOwnerId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where picture_id = #{pictureId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.entity.ProductPicture">
+    update product_picture
+    set product_spu_num = #{productSpuNum,jdbcType=INTEGER},
+      picture_path = #{picturePath,jdbcType=VARCHAR},
+      picture_master_graph = #{pictureMasterGraph,jdbcType=SMALLINT},
+      picture_order = #{pictureOrder,jdbcType=SMALLINT},
+      picture_modified_time = #{pictureModifiedTime,jdbcType=TIMESTAMP},
+      spu_owner_id = #{spuOwnerId,jdbcType=VARCHAR}
+    where picture_id = #{pictureId,jdbcType=VARCHAR}
+  </update>
+</mapper>
